@@ -9,9 +9,11 @@ public class Kebabiste
     {
         None,
         OrderIngredient,
+        PrepareIngredient,
         CreateDish,
         FakeClient,
-        Corrupt
+        Corrupt,
+        TakeBreak
     }
     
     public int money;

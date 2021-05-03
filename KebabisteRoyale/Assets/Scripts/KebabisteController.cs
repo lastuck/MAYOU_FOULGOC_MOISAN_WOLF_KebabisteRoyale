@@ -1,18 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class KebabisteController : MonoBehaviour
+public class KebabisteIntent
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Kebabiste.Action action;
+    public Ingredient ingredient;
+}
 
-    // Update is called once per frame
-    void Update()
+public class KebabisteController : Kebabiste
+{
+    
+    
+    public void OrderIngredient(Ingredient ingredient)
     {
-        
+        money -= GameController.ingredientPrices[ingredient];
+        ingredientAmounts[ingredient] += 5;
+    }
+    public void PrepareIngredient(Ingredient ingredient)
+    {
+        ingredientAmounts[ingredient] -= 1;
+        ingredientsReadyToUse[ingredient] += 1;
     }
 }

@@ -13,13 +13,14 @@ public class Kebabiste
         FakeClient,
         Corrupt
     }
-    
 
-    private int money;
-    private int stress;
+
+    protected int money;
+    protected int stress;
     public const int MAX_STRESS = 100;
-    private Dictionary<Ingredient, int> ingredientAmounts;
-    
+    protected Dictionary<Ingredient, int> ingredientAmounts;
+    protected Dictionary<Ingredient, int> ingredientsReadyToUse;
+    protected bool isAI;
     
     public Kebabiste()
     {
@@ -32,8 +33,9 @@ public class Kebabiste
         stress = 0;
     }
 
-    public virtual Action GetIntent()
+    public virtual KebabisteIntent GetIntent()
     {
-        return Action.None;
+        return null;
     }
+    
 }

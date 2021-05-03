@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum Ingredient
 {
@@ -21,17 +22,29 @@ public enum Ingredient
 public class GameController : MonoBehaviour
 {
     public static Dictionary<Ingredient, int> ingredientPrices;
-    public static Kebabiste kebabiste1;
-    public static Kebabiste kebabiste2;
+    public static KebabisteController kebabiste1;
+    public static KebabisteController kebabiste2;
 
     [SerializeField] private bool keb1isAI;
     [SerializeField] private bool keb2isAI;
     
+    [SerializeField] private Text SheepAmount; 
+    [SerializeField] private Text ChickenAmount; 
+    [SerializeField] private Text SteakAmount; 
+    [SerializeField] private Text SaladAmount; 
+    [SerializeField] private Text TomatoesAmount; 
+    [SerializeField] private Text OnionsAmount; 
+    [SerializeField] private Text SamuraiAmount; 
+    [SerializeField] private Text WhiteAmount; 
+    [SerializeField] private Text BBQAmount; 
+    [SerializeField] private Text KetchupAmount; 
+    [SerializeField] private Text MayoAmount; 
+    
     private void Start()
     {
         InitPrices();
-        kebabiste1 = new Kebabiste();
-        kebabiste2 = new Kebabiste();
+        kebabiste1 = new KebabisteController();
+        kebabiste2 = new KebabisteController();
         
         
     }
@@ -49,5 +62,10 @@ public class GameController : MonoBehaviour
         ingredientPrices.Add(Ingredient.BBQ, 100);
         ingredientPrices.Add(Ingredient.Ketchup, 100);
         ingredientPrices.Add(Ingredient.Mayo, 100);
+    }
+
+    public static void UpdateAmounts()
+    {
+        
     }
 }

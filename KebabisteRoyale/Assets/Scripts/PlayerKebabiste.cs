@@ -2,12 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class KebabisteIntent
+{
+    public Kebabiste.Action action;
+    public Ingredient ingredient;
+}
+
 public class PlayerKebabiste : Kebabiste
 { 
-    private PlayerInputs playerInputs;
+    public PlayerInputs playerInputs;
+    public bool isAI;
 
     public override KebabisteIntent GetIntent()
     {
-        return playerInputs.intent;
+        KebabisteIntent toReturn = playerInputs.intent;
+        playerInputs.intent = null;
+        return toReturn;
     }
 }

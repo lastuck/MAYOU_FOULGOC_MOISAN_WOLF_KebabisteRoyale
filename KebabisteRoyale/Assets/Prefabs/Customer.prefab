@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7684455809417705860}
   - component: {fileID: 6929567666502208153}
   - component: {fileID: 5174664794310709265}
+  - component: {fileID: 5718765264917446757}
   m_Layer: 0
   m_Name: Customer
   m_TagString: Untagged
@@ -96,3 +97,17 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5718765264917446757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3639612757380475442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51adc4b04a504cb48bc6ac41fc5318bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wantedRecipe: 
+  lifetime: 120

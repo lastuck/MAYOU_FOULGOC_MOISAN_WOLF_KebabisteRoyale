@@ -29,6 +29,12 @@ public class PlayerInputs : MonoBehaviour
     [SerializeField] private Button prepareBBQ;
     [SerializeField] private Button prepareKetchup;
     [SerializeField] private Button prepareMayo;
+    
+    [SerializeField] private Button corrupt;
+    [SerializeField] private Button fakeClient;
+    [SerializeField] private Button serveOrder;
+    [SerializeField] private Button takeBreak;
+    
 
     public KebabisteIntent intent = null;
     private void Start()
@@ -41,28 +47,133 @@ public class PlayerInputs : MonoBehaviour
                         ingredient = Ingredient.Sheep
                     };
             });
-        orderSteak.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Steak); });
-        orderChicken.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Chicken); });
-        orderSalad.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Salad); });
-        orderTomatoes.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Tomatoes); });
-        orderOnions.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Onions); });
-        orderSamurai.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Samurai); });
-        orderWhite.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.White); });
-        orderBBQ.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.BBQ); });
-        orderKetchup.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Ketchup); });
-        orderMayo.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Mayo); });
+        orderSteak.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.Steak
+        }; });
+        orderChicken.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.Chicken
+        };; });
+        orderSalad.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.Salad
+        }; });
+        orderTomatoes.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.Tomatoes
+        }; });
+        orderOnions.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.Onions
+        }; });
+        orderSamurai.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.Samurai
+        }; });
+        orderWhite.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.White
+        };});
+        orderBBQ.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.BBQ
+        }; });
+        orderKetchup.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.Ketchup
+        }; });
+        orderMayo.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.OrderIngredient,
+            ingredient = Ingredient.Mayo
+        }; });
         
-        prepareSheep.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Sheep); });
-        prepareSteak.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Steak); });
-        prepareChicken.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Chicken); });
-        prepareSalad.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Salad); });
-        prepareTomatoes.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Tomatoes); });
-        prepareOnions.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Onions); });
-        prepareSamurai.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Samurai); });
-        prepareWhite.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.White); });
-        prepareBBQ.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.BBQ); });
-        prepareKetchup.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Ketchup); });
-        prepareMayo.onClick.AddListener(delegate { GameController.kebabiste1.PrepareIngredient(Ingredient.Mayo); });
+        prepareSheep.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Sheep
+        }; });
+        prepareSteak.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Steak
+        }; });
+        prepareChicken.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Chicken
+        }; });
+        prepareSalad.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Salad
+        }; });
+        prepareTomatoes.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Tomatoes
+        }; });
+        prepareOnions.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Onions
+        }; });
+        prepareSamurai.onClick.AddListener(delegate {intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Samurai
+        }; });
+        prepareWhite.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.White
+        }; });
+        prepareBBQ.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.BBQ
+        }; });
+        prepareKetchup.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Ketchup
+        }; });
+        prepareMayo.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.PrepareIngredient,
+            ingredient = Ingredient.Mayo
+        }; });
+        
+        corrupt.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.Corrupt,
+            ingredient = Ingredient.Mayo
+        }; });
+        fakeClient.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.FakeClient,
+            ingredient = Ingredient.Mayo
+        }; });
+        serveOrder.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.CreateDish,
+            ingredient = Ingredient.Mayo
+        }; });
+        takeBreak.onClick.AddListener(delegate { intent = new KebabisteIntent
+        {
+            action = Kebabiste.Action.TakeBreak,
+            ingredient = Ingredient.Mayo
+        }; });
     }
 
     

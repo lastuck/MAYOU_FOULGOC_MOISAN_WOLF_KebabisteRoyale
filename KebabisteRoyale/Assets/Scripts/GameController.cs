@@ -23,12 +23,17 @@ public class GameController : MonoBehaviour
     public static Dictionary<Ingredient, int> ingredientPrices;
     public static Kebabiste kebabiste1;
     public static Kebabiste kebabiste2;
+
+    [SerializeField] private bool keb1isAI;
+    [SerializeField] private bool keb2isAI;
     
     private void Start()
     {
         InitPrices();
         kebabiste1 = new Kebabiste();
         kebabiste2 = new Kebabiste();
+        
+        
     }
 
     private void InitPrices()

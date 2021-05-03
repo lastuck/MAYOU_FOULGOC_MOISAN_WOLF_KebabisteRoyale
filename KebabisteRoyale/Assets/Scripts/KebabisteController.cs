@@ -9,18 +9,19 @@ public class KebabisteIntent
     public Ingredient ingredient;
 }
 
-public class KebabisteController : Kebabiste
+public class KebabisteController
 {
-    
+    private bool isAI;
+    private Kebabiste kebabiste;
     
     public void OrderIngredient(Ingredient ingredient)
     {
-        money -= GameController.ingredientPrices[ingredient];
-        ingredientAmounts[ingredient] += 5;
+        kebabiste.money -= GameController.ingredientPrices[ingredient];
+        kebabiste.ingredientAmounts[ingredient] += 5;
     }
     public void PrepareIngredient(Ingredient ingredient)
     {
-        ingredientAmounts[ingredient] -= 1;
-        ingredientsReadyToUse[ingredient] += 1;
+        kebabiste.ingredientAmounts[ingredient] -= 1;
+        kebabiste.ingredientsReadyToUse[ingredient] += 1;
     }
 }

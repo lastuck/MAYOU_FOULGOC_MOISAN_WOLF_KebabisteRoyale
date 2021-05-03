@@ -30,9 +30,17 @@ public class PlayerInputs : MonoBehaviour
     [SerializeField] private Button prepareKetchup;
     [SerializeField] private Button prepareMayo;
 
+    public KebabisteIntent intent = null;
     private void Start()
     {
-        orderSheep.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Sheep); });
+        orderSheep.onClick.AddListener(
+            delegate { 
+                intent = new KebabisteIntent
+                    {
+                        action = Kebabiste.Action.OrderIngredient,
+                        ingredient = Ingredient.Sheep
+                    };
+            });
         orderSteak.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Steak); });
         orderChicken.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Chicken); });
         orderSalad.onClick.AddListener(delegate { GameController.kebabiste1.OrderIngredient(Ingredient.Salad); });

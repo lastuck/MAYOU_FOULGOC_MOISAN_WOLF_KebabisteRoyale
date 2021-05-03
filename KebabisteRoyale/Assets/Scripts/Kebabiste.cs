@@ -13,15 +13,13 @@ public class Kebabiste
         FakeClient,
         Corrupt
     }
-
-
-    protected int money;
-    protected int stress;
-    public const int MAX_STRESS = 100;
-    protected Dictionary<Ingredient, int> ingredientAmounts;
-    protected Dictionary<Ingredient, int> ingredientsReadyToUse;
-    protected bool isAI;
     
+    public int money;
+    public int stress;
+    public const int MAX_STRESS = 100;
+    public Dictionary<Ingredient, int> ingredientAmounts;
+    public Dictionary<Ingredient, int> ingredientsReadyToUse;
+
     public Kebabiste()
     {
         foreach (Ingredient ingredient in Enum.GetValues(typeof(Ingredient)))

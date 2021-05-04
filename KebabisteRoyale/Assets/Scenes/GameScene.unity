@@ -1240,8 +1240,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 203360136}
-  - component: {fileID: 203360138}
   - component: {fileID: 203360137}
+  - component: {fileID: 203360138}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -1310,11 +1310,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 203360135}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b160dcb80155aa4daf1baed04aeccce, type: 3}
+  m_Script: {fileID: 11500000, guid: a9694be77e43330408cb371da1fe96da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keb1isAI: 0
-  keb2isAI: 0
+  keb1isAI: 1
+  keb2isAI: 1
   SheepAmount: {fileID: 253107814}
   ChickenAmount: {fileID: 734244536}
   SteakAmount: {fileID: 1920224465}
@@ -4839,8 +4839,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1986121787}
   m_HandleRect: {fileID: 1986121786}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.99999994
+  m_Value: 1.0000012
+  m_Size: 0.9391691
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

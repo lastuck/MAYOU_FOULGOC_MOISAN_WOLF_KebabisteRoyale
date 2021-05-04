@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class KebabisteIntent
 {
@@ -38,7 +37,6 @@ public class Kebabiste
     public bool serving;
     public bool corrupting;
     public bool fakeCustomerInQueue;
-    
 
     public List<Ingredient> orderedIngredients;
     public bool unableToAct;
@@ -50,6 +48,7 @@ public class Kebabiste
         ingredientsReadyToUse = new Dictionary<Ingredient, int>();
         orderedIngredients = new List<Ingredient>();
         customers = new List<Customer>();
+
         foreach (Ingredient ingredient in Enum.GetValues(typeof(Ingredient)))
         {
             ingredientAmounts.Add(ingredient, 0);

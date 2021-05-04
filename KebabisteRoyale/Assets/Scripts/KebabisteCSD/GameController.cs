@@ -6,6 +6,7 @@ using BehaviorTree;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public enum Ingredient
 {
     Sheep,
@@ -55,7 +56,10 @@ public class GameController : MonoBehaviour
     [SerializeField] private Text MayoAmountReady;
     
     [SerializeField] private Slider stressBar; 
-    [SerializeField] private Text money; 
+    [SerializeField] private Text money;
+    [SerializeField] private Text customersServed;
+
+    [SerializeField] private Text currentOrderFeedback;
     
     [SerializeField] private Text EnemySheepAmount; 
     [SerializeField] private Text EnemyChickenAmount; 
@@ -71,19 +75,21 @@ public class GameController : MonoBehaviour
     
     [SerializeField] private Slider EnemyStressBar; 
     [SerializeField] private Text EnemyMoney;
+    [SerializeField] private Text EnemyCustomersServed; 
 
     [SerializeField] private GameObject customer;
     [SerializeField] private Transform[] customerPlaces;
     [SerializeField] private PlayerInputs playerInputs;
     
-    private bool gameRunning = true;
+    public static bool gameRunning = true;
     
     private async void Start()
     {
         InitPrices();
         kebabiste1 = keb1isAI ? (Kebabiste) new AgentKebabiste() : new PlayerKebabiste();
         kebabiste2 = keb2isAI ? (Kebabiste) new AgentKebabiste() : new PlayerKebabiste();
-        
+
+        // je trouve ça dégueulasse
         kebabiste1.opponent = kebabiste2;
         kebabiste2.opponent = kebabiste1;
 
@@ -165,6 +171,7 @@ public class GameController : MonoBehaviour
 
         stressBar.value = (float)kebabiste1.stress/100;
         money.text = kebabiste1.money.ToString();
+        customersServed.text = kebabiste1.servedCount.ToString();
         
         EnemySheepAmount.text = (kebabiste2.ingredientAmounts[Ingredient.Sheep]+kebabiste2.ingredientsReadyToUse[Ingredient.Sheep]).ToString();
         EnemySteakAmount.text = (kebabiste2.ingredientAmounts[Ingredient.Steak]+kebabiste2.ingredientsReadyToUse[Ingredient.Steak]).ToString();
@@ -180,6 +187,7 @@ public class GameController : MonoBehaviour
         
         EnemyStressBar.value = (float)kebabiste2.stress/100;
         //EnemyMoney.text = kebabiste2.money.ToString();
+        EnemyCustomersServed.text = kebabiste2.servedCount.ToString();
     }
 
     private void SpawnCustomer(bool visual)
@@ -230,12 +238,7 @@ public class GameController : MonoBehaviour
             if (kebabiste1.recipe != customersList.First().wantedRecipe)
             {
                 kebabiste1.recipe = customersList.First().wantedRecipe;
-                string recipeStr = "";
-                foreach (Ingredient ingredient in kebabiste1.recipe)
-                {
-                    recipeStr+=ingredient+" ";
-                }
-                Debug.Log(recipeStr);
+                UpdateCommandFeedback(kebabiste1.recipe);
             }
         }
         else if (customersList.Count > 0)
@@ -245,7 +248,16 @@ public class GameController : MonoBehaviour
                 kebabiste2.recipe = customersList.First().wantedRecipe;
             }
         }
+    }
 
+    private void UpdateCommandFeedback(List<Ingredient> order)
+    {
+        string recipeStr = "";
+        foreach (Ingredient ingredient in order)
+        {
+            recipeStr+=ingredient+"\n";
+        }
+        currentOrderFeedback.text = recipeStr + " chef !";
     }
 
     public static bool endOfBehavior;
@@ -283,8 +295,8 @@ public class GameController : MonoBehaviour
                 StartCoroutine(Stun(kebabiste2));
             }
 
-            PlayActions(kebabiste1, true);
-            PlayActions(kebabiste2, false);
+            PlayActions(kebabiste1, kebabiste1.GetIntent());
+            PlayActions(kebabiste2, kebabiste2.GetIntent());
             
             if (kebabiste1.servedCount > 10)
             {
@@ -320,11 +332,10 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void PlayActions(Kebabiste kebabiste, bool visual)
+    public void PlayActions(Kebabiste kebabiste, KebabisteIntent kebabisteIntent)
     {
         if (!kebabiste.unableToAct)
         {
-            KebabisteIntent kebabisteIntent = kebabiste.GetIntent();
             if (kebabisteIntent != null)
             {
                 switch (kebabisteIntent.action)

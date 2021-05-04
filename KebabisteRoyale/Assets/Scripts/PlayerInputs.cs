@@ -35,8 +35,8 @@ public class PlayerInputs : MonoBehaviour
     [SerializeField] private Button serveOrder;
     [SerializeField] private Button takeBreak;
     
+    public KebabisteIntent intent;
 
-    public KebabisteIntent intent = null;
     private void Start()
     {
         orderSheep.onClick.AddListener(
@@ -47,16 +47,16 @@ public class PlayerInputs : MonoBehaviour
                         ingredient = Ingredient.Sheep
                     };
             });
-        orderSteak.onClick.AddListener(delegate { intent = new KebabisteIntent
-        {
-            action = Kebabiste.Action.OrderIngredient,
-            ingredient = Ingredient.Steak
-        }; });
+        orderSteak.onClick.AddListener(delegate { intent = new KebabisteIntent {
+                action = Kebabiste.Action.OrderIngredient,
+                ingredient = Ingredient.Steak
+            };
+        });
         orderChicken.onClick.AddListener(delegate { intent = new KebabisteIntent
         {
             action = Kebabiste.Action.OrderIngredient,
             ingredient = Ingredient.Chicken
-        };; });
+        }; });
         orderSalad.onClick.AddListener(delegate { intent = new KebabisteIntent
         {
             action = Kebabiste.Action.OrderIngredient,

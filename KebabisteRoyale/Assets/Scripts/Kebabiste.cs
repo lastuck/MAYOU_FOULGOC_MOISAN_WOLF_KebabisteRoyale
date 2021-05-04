@@ -1,7 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+
+public class KebabisteIntent
+{
+    public Kebabiste.Action action;
+    public Ingredient ingredient;
+}
 
 public class Kebabiste
 {
@@ -59,5 +63,4 @@ public class Kebabiste
     {
         return null;
     }
-    
 }

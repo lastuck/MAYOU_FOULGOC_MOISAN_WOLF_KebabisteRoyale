@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BehaviorTree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,10 +24,10 @@ public enum Ingredient
 public class GameController : MonoBehaviour
 {
     public static Dictionary<Ingredient, int> ingredientPrices;
-    public static PlayerKebabiste kebabiste1;
-    public static PlayerKebabiste kebabiste2;
+    public static Kebabiste kebabiste1;
+    public static Kebabiste kebabiste2;
 
-    [SerializeField] private bool visualisAI;
+    [SerializeField] private bool keb1isAI;
     [SerializeField] private bool keb2isAI;
     
     [SerializeField] private Text SheepAmount; 
@@ -40,7 +41,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private Text BBQAmount; 
     [SerializeField] private Text KetchupAmount; 
     [SerializeField] private Text MayoAmount;
-    
+
     [SerializeField] private Text SheepAmountReady; 
     [SerializeField] private Text ChickenAmountReady; 
     [SerializeField] private Text SteakAmountReady; 
@@ -76,20 +77,46 @@ public class GameController : MonoBehaviour
     [SerializeField] private PlayerInputs playerInputs;
     
     private bool gameRunning = true;
-
     
-    
-    private void Start()
+    private async void Start()
     {
         InitPrices();
-        kebabiste1 = new PlayerKebabiste();
-        kebabiste1.playerInputs = playerInputs;
-        //kebabiste1.isAI = visualisAI;
-        kebabiste2 = new PlayerKebabiste();
-        kebabiste2.playerInputs = playerInputs;
+        kebabiste1 = keb1isAI ? (Kebabiste) new AgentKebabiste() : new PlayerKebabiste();
+        kebabiste2 = keb2isAI ? (Kebabiste) new AgentKebabiste() : new PlayerKebabiste();
 
+        // je trouve ça dégueulasse
         kebabiste1.opponent = kebabiste2;
         kebabiste2.opponent = kebabiste1;
+
+        if (keb1isAI)
+        {
+            if (kebabiste1 is AgentKebabiste agent)
+            {
+                agent.ComputeIntent();
+            }
+        }
+        else
+        {
+            if (kebabiste1 is PlayerKebabiste player)
+            {
+                player.playerInputs = playerInputs;
+            }
+        }
+
+        if (keb2isAI)
+        {
+            if (kebabiste2 is AgentKebabiste agent)
+            {
+                agent.ComputeIntent();
+            }
+        }
+        else
+        {
+            if (kebabiste2 is PlayerKebabiste player)
+            {
+                player.playerInputs = playerInputs;
+            }
+        }
 
         StartCoroutine(IncreaseStress());
     }
@@ -97,6 +124,7 @@ public class GameController : MonoBehaviour
     private void InitPrices()
     {
         ingredientPrices = new Dictionary<Ingredient, int>();
+        
         ingredientPrices.Add(Ingredient.Sheep, 100);
         ingredientPrices.Add(Ingredient.Chicken, 100);
         ingredientPrices.Add(Ingredient.Steak, 100);
@@ -221,6 +249,8 @@ public class GameController : MonoBehaviour
 
     }
 
+    public static bool endOfBehavior;
+
     private void Update()
     {
         if (gameRunning)
@@ -268,6 +298,16 @@ public class GameController : MonoBehaviour
                 Debug.Log("kebabiste2 a gagné");
                 gameRunning = false;
             }
+        }
+        
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            endOfBehavior = true;
+        }
+        
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            kebabiste1.stress = 95;
         }
     }
 

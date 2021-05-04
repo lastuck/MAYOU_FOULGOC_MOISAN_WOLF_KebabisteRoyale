@@ -6,6 +6,7 @@ using BehaviorTree;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public enum Ingredient
 {
     Sheep,
@@ -55,7 +56,8 @@ public class GameController : MonoBehaviour
     [SerializeField] private Text MayoAmountReady;
     
     [SerializeField] private Slider stressBar; 
-    [SerializeField] private Text money; 
+    [SerializeField] private Text money;
+    [SerializeField] private Text customersServed; 
     
     [SerializeField] private Text EnemySheepAmount; 
     [SerializeField] private Text EnemyChickenAmount; 
@@ -71,6 +73,7 @@ public class GameController : MonoBehaviour
     
     [SerializeField] private Slider EnemyStressBar; 
     [SerializeField] private Text EnemyMoney;
+    [SerializeField] private Text EnemyCustomersServed; 
 
     [SerializeField] private GameObject customer;
     [SerializeField] private Transform[] customerPlaces;
@@ -166,6 +169,7 @@ public class GameController : MonoBehaviour
 
         stressBar.value = (float)kebabiste1.stress/100;
         money.text = kebabiste1.money.ToString();
+        customersServed.text = kebabiste1.servedCount.ToString();
         
         EnemySheepAmount.text = (kebabiste2.ingredientAmounts[Ingredient.Sheep]+kebabiste2.ingredientsReadyToUse[Ingredient.Sheep]).ToString();
         EnemySteakAmount.text = (kebabiste2.ingredientAmounts[Ingredient.Steak]+kebabiste2.ingredientsReadyToUse[Ingredient.Steak]).ToString();
@@ -181,6 +185,7 @@ public class GameController : MonoBehaviour
         
         EnemyStressBar.value = (float)kebabiste2.stress/100;
         //EnemyMoney.text = kebabiste2.money.ToString();
+        EnemyCustomersServed.text = kebabiste2.servedCount.ToString();
     }
 
     private void SpawnCustomer(bool visual)

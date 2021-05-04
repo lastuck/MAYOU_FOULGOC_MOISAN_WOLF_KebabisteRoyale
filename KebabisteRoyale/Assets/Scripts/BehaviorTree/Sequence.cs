@@ -29,7 +29,7 @@ namespace BehaviorTree
             isRunning = true;
             actionToExecute?.Invoke();
 
-            while (isRunning && checkCanContinueLambda != null && checkCanContinueLambda())
+            while (isRunning && checkCanContinueLambda != null && !checkCanContinueLambda())
             {
                 await Task.Delay(10);
             }

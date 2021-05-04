@@ -86,6 +86,9 @@ public class FPSGameController : MonoBehaviour
         {
             PlayActions(kebabiste1);
             PlayActions(kebabiste2);
+
+            kebabiste1.exposer.lifeSlider.value = (float)kebabiste1.life / 100;
+            kebabiste2.exposer.lifeSlider.value = (float)kebabiste2.life / 100;
             
             if (kebabiste1.life <= 0)
             {

@@ -12,9 +12,8 @@ public class FPSPlayerKebabiste : FPSKebabiste
         playerInputs.intent = Action.None;
         return toReturn;
     }
-    
-    
-    public void RotateView()
+
+    public override void RotateView()
     {
         //avoids the mouse looking if the game is effectively paused
         float rotationSpeed = 2.0f;
@@ -26,7 +25,7 @@ public class FPSPlayerKebabiste : FPSKebabiste
         kebabisteCam.transform.Rotate(-vertical, 0, 0, Space.Self);
 
         Quaternion q = kebabisteCam.transform.localRotation;
-            
+
         q.x /= q.w;
         q.y /= q.w;
         q.z /= q.w;

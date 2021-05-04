@@ -5,6 +5,7 @@ using UnityEngine;
 public class FPSPlayerInputs : MonoBehaviour
 {
     public FPSKebabiste.Action intent;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))

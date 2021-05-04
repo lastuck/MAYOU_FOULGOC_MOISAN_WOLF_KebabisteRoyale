@@ -27,17 +27,17 @@ public class Reloader : MonoBehaviour
 
     private IEnumerator ReloadAmmo(FPSKebabiste kebabiste)
     {
-        Debug.Log("start reloading");
         isReloading = true;
-        int cpt = 0;
-        while (cpt<5)
+        while (isReloading)
         {
-            yield return new WaitForSeconds(1.0f);
-            cpt++;
-        }
+            int cpt = 0;
+            while (cpt<5)
+            {
+                yield return new WaitForSeconds(1.0f);
+                cpt++;
+            }
         
-        kebabiste.ammo = 10;
-        isReloading = false;
-        Debug.Log("reloading done");
+            kebabiste.ammo = 10;
+        }
     }
 }

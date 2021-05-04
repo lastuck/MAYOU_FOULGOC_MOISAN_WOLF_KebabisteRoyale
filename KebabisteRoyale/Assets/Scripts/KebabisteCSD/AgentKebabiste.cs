@@ -1,9 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using BehaviorTree;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace BehaviorTree
+namespace KebabisteCSD
 {
     public class AgentKebabiste : Kebabiste
     {

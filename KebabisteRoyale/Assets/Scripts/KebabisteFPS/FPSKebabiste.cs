@@ -41,7 +41,6 @@ public class FPSKebabiste
     public Coroutine goingToreload;
     public Coroutine goingNear;
 
-
     public FPSKebabiste()
     {
         life = 100;
@@ -61,5 +60,10 @@ public class FPSKebabiste
     public virtual Action GetIntent()
     {
         return Action.None;
+    }
+
+    public virtual void RotateView()
+    {
+        
     }
 }

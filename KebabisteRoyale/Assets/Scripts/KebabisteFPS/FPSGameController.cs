@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Games.Global.Weapons;
+using KebabisteFPS;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,11 +25,11 @@ public class FPSGameController : MonoBehaviour
     [SerializeField] private Transform[] covers;
     [SerializeField] private Transform[] reloadingZones;
 
-    private bool gameRunning = true;
-    void Start()
+    public static bool gameRunning = true;
+    async void Start()
     {
-        kebabiste1 = new FPSPlayerKebabiste();
-        kebabiste2 = new FPSPlayerKebabiste();
+        kebabiste1 = !keb1isAI ? (FPSKebabiste) new FPSPlayerKebabiste() : new FPSAgentKebabiste();
+        kebabiste2 = !keb2isAI ? (FPSKebabiste) new FPSPlayerKebabiste() : new FPSAgentKebabiste();
         
         kebabiste1.opponent = kebabiste2;
         kebabiste2.opponent = kebabiste1;
@@ -41,23 +42,40 @@ public class FPSGameController : MonoBehaviour
         kebabiste2.SetupPlayer();
         kebabiste2.exposer.kebabiste = kebabiste2;
         
-        if (kebabiste1 is FPSPlayerKebabiste player1)
+        if (keb1isAI)
         {
-            player1.playerInputs = playerInputs;
-            //player1.exposer.agent.enabled = false;
-            if (keb1isAI)
+            if (kebabiste1 is FPSAgentKebabiste agent1)
             {
-                player1.kebabistePrefab.GetComponent<FPSKebabisteExposer>().camera.enabled = false;
+                agent1.ComputeIntent();
             }
+            kebabiste2.kebabistePrefab.GetComponent<FPSKebabisteExposer>().camera.enabled = false;
         }
-        if (kebabiste2 is FPSPlayerKebabiste player2)
+        else
         {
-            player2.playerInputs = playerInputs;
-            //player2.exposer.agent.enabled = false;
-            if (keb2isAI)
+            if (kebabiste1 is FPSPlayerKebabiste player1)
             {
-                player2.kebabistePrefab.GetComponent<FPSKebabisteExposer>().camera.enabled = false;
+                player1.playerInputs = playerInputs;
             }
+
+            kebabiste1.exposer.agent.enabled = false;
+        }
+
+        if (keb2isAI)
+        {
+            if (kebabiste2 is FPSAgentKebabiste agent2)
+            {
+                agent2.ComputeIntent();
+            }
+            kebabiste2.kebabistePrefab.GetComponent<FPSKebabisteExposer>().camera.enabled = false;
+        }
+        else
+        {
+            if (kebabiste2 is FPSPlayerKebabiste player2)
+            {
+                player2.playerInputs = playerInputs;
+            }
+
+            kebabiste2.exposer.agent.enabled = false;
         }
     }
 
@@ -98,11 +116,8 @@ public class FPSGameController : MonoBehaviour
     public void PlayActions(FPSKebabiste kebabiste)
     {
         float speed = 20.0f;
-        if (kebabiste is FPSPlayerKebabiste player)
-        {
-            player.RotateView();
-        }
-        
+        kebabiste.RotateView();
+
         FPSKebabiste.Action kebabisteIntent = kebabiste.GetIntent();
         
         switch (kebabisteIntent)

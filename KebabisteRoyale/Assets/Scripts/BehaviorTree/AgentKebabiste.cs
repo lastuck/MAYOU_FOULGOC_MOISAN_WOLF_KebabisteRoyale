@@ -44,7 +44,7 @@ namespace BehaviorTree
             selector.AddNode(sequenceOpponentCondition);
             
             // Si le seuil d'ingredient préparé est trop bas
-            CreateSequencePrepareIngredient();
+            // CreateSequencePrepareIngredient();
             
             // Si un plat est attendu et peut être préparé
             SequenceAction sequencePrepareRecipe = new SequenceAction(() => 
@@ -67,17 +67,37 @@ namespace BehaviorTree
         {
             foreach (Ingredient ing in Enum.GetValues(typeof(Ingredient)))
             {
+                SequenceAction sequencePrepareIngredient = new SequenceAction(() => 
+                    SetIntent(new KebabisteIntent {
+                        action = Action.PrepareIngredient,
+                        ingredient = ing
+                    }),
+                    () => CanContinue(ing)
+                );
+
                 SequenceAction sequenceOrderIngredient = new SequenceAction(() => 
                     SetIntent(new KebabisteIntent {
                         action = Action.OrderIngredient,
                         ingredient = ing
-                    })
-                );
+                    }),
+                    sequencePrepareIngredient,
+                    () => CanPrepareIngredient(ing));
+
                 SequenceCondition sequenceMissingIngredients =
                     new SequenceCondition(() => CheckMissingIngredient(ing), sequenceOrderIngredient);
 
                 selector.AddNode(sequenceMissingIngredients);
             }
+        }
+
+        private bool CanPrepareIngredient(Ingredient ing)
+        {
+            return ingredientAmounts[ing] > 0;
+        }
+
+        private bool CanContinue(Ingredient ing)
+        {
+            return ingredientsReadyToUse[ing] > 0;
         }
 
         private void CreateSequencePrepareIngredient()

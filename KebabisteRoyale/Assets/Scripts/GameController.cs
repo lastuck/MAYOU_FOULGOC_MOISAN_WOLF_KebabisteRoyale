@@ -57,7 +57,9 @@ public class GameController : MonoBehaviour
     
     [SerializeField] private Slider stressBar; 
     [SerializeField] private Text money;
-    [SerializeField] private Text customersServed; 
+    [SerializeField] private Text customersServed;
+
+    [SerializeField] private Text currentOrderFeedback;
     
     [SerializeField] private Text EnemySheepAmount; 
     [SerializeField] private Text EnemyChickenAmount; 
@@ -236,12 +238,7 @@ public class GameController : MonoBehaviour
             if (kebabiste1.recipe != customersList.First().wantedRecipe)
             {
                 kebabiste1.recipe = customersList.First().wantedRecipe;
-                string recipeStr = "";
-                foreach (Ingredient ingredient in kebabiste1.recipe)
-                {
-                    recipeStr+=ingredient+" ";
-                }
-                Debug.Log(recipeStr);
+                UpdateCommandFeedback(kebabiste1.recipe);
             }
         }
         else if (customersList.Count > 0)
@@ -251,7 +248,16 @@ public class GameController : MonoBehaviour
                 kebabiste2.recipe = customersList.First().wantedRecipe;
             }
         }
+    }
 
+    private void UpdateCommandFeedback(List<Ingredient> order)
+    {
+        string recipeStr = "";
+        foreach (Ingredient ingredient in order)
+        {
+            recipeStr+=ingredient+"\n";
+        }
+        currentOrderFeedback.text = recipeStr + " chef !";
     }
 
     public static bool endOfBehavior;

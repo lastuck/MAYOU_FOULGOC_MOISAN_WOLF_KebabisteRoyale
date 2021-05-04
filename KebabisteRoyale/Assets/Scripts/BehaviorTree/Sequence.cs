@@ -1,27 +1,67 @@
 ﻿using System;
+using System.Threading.Tasks;
+using UnityEngine;
 
-public class SequenceAction<T> : Node<T>
+namespace BehaviorTree
 {
-    public SequenceAction(Func<T> actionToExecute) : base(actionToExecute)
+    public class SequenceAction : Node
     {
-        nodeType = NodeType.Action;
-    }
+        private Action actionToExecute;
+        private bool isRunning;
+        private Func<bool> checkCanContinueLambda;
     
-    public SequenceAction(Func<T> actionToExecute, Node<T> nextNode) : base(actionToExecute, nextNode)
-    {
-        nodeType = NodeType.Action;
-    }
-}
+        public SequenceAction(Action actionToExecute, Func<bool> checkCanContinueLambda = null) : base()
+        {
+            this.checkCanContinueLambda = checkCanContinueLambda;
+            this.actionToExecute = actionToExecute;
+            nodeType = NodeType.Action;
+        }
+    
+        public SequenceAction(Action actionToExecute, Node nextNode, Func<bool> checkCanContinueLambda = null) : base(nextNode)
+        {
+            this.checkCanContinueLambda = checkCanContinueLambda;
+            this.actionToExecute = actionToExecute;
+            nodeType = NodeType.Action;
+        }
 
-public class SequenceCondition<T> : Node<T>
-{
-    public SequenceCondition(Func<bool> nLambada) : base(nLambada)
-    {
-        nodeType = NodeType.Condition;
+        public override async Task<bool> CheckCondition()
+        {
+            isRunning = true;
+            actionToExecute?.Invoke();
+
+            while (isRunning && checkCanContinueLambda != null && checkCanContinueLambda())
+            {
+                await Task.Delay(10);
+            }
+
+            return await ComputeNextNode();
+        }
     }
 
-    public SequenceCondition(Func<bool> nLambada, Node<T> nextNode) : base(nLambada, nextNode)
+    public class SequenceCondition : Node
     {
-        nodeType = NodeType.Condition;
+        private Func<bool> lambada;
+
+        public SequenceCondition(Func<bool> nLambada)
+        {
+            lambada = nLambada;
+            nodeType = NodeType.Condition;
+        }
+
+        public SequenceCondition(Func<bool> nLambada, Node nextNode) : base(nextNode)
+        {
+            lambada = nLambada;
+            nodeType = NodeType.Condition;
+        }
+    
+        public override async Task<bool> CheckCondition()
+        {
+            if (lambada != null && lambada())
+            {
+                return await ComputeNextNode();
+            }
+
+            return false;
+        }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -8,92 +7,103 @@ namespace BehaviorTree
 {
     public class AgentKebabiste : Kebabiste
     {
-        private Selector<KebabisteIntent> selector;
+        private Selector selector;
         private KebabisteIntent kebabisteIntent;
 
         public AgentKebabiste()
         {
-            selector = new Selector<KebabisteIntent>();
+            selector = new Selector();
             
             // Init different sequences
 
             // Si le stress est trop haut
-            SequenceAction<KebabisteIntent> sequenceTakeBreak = new SequenceAction<KebabisteIntent>(() => 
-                new KebabisteIntent {
+            SequenceAction sequenceTakeBreak = new SequenceAction(() => 
+                SetIntent(new KebabisteIntent {
                     action = Action.TakeBreak
-                }
+                })
             );
-            SequenceCondition<KebabisteIntent> sequenceCheckStress = new SequenceCondition<KebabisteIntent>(CheckStressCondition, sequenceTakeBreak);
+            SequenceCondition sequenceCheckStress = new SequenceCondition(CheckStressCondition, sequenceTakeBreak);
 
             selector.AddNode(sequenceCheckStress);
 
-            // Si il manque des ingrédients
-            foreach (Ingredient ing in Enum.GetValues(typeof(Ingredient)))
-            {
-                SequenceAction<KebabisteIntent> sequenceOrderIngredient = new SequenceAction<KebabisteIntent>(() => 
-                    new KebabisteIntent {
-                        action = Action.OrderIngredient,
-                        ingredient = ing
-                    }
-                );
-                SequenceCondition<KebabisteIntent> sequenceMissingIngredients =
-                    new SequenceCondition<KebabisteIntent>(() => CheckMissingIngredient(ing), sequenceOrderIngredient);
+            // Si il manque des ingrédients pour la recette
+            CreateSequenceForRecipe();
 
-                selector.AddNode(sequenceMissingIngredients);
-            }
-            
             // Si l'adversaire à un niveau de stress élevé ou il est trop en avance
-            SequenceAction<KebabisteIntent> sequenceAttackOpponent = new SequenceAction<KebabisteIntent>(() =>
+            SequenceAction sequenceAttackOpponent = new SequenceAction(() =>
             {
                 Action attackAction = Random.Range(0, 2) == 0 ? Action.FakeClient : Action.Corrupt;
-                return new KebabisteIntent
+                SetIntent(new KebabisteIntent
                 {
                     action = attackAction
-                };
+                });
             });
-            SequenceCondition<KebabisteIntent> sequenceOpponentCondition =
-                new SequenceCondition<KebabisteIntent>(CheckOpponentStressCondition, sequenceAttackOpponent);
+            SequenceCondition sequenceOpponentCondition =
+                new SequenceCondition(CheckOpponentStressCondition, sequenceAttackOpponent);
 
             selector.AddNode(sequenceOpponentCondition);
             
             // Si le seuil d'ingredient préparé est trop bas
-            foreach (Ingredient ing in Enum.GetValues(typeof(Ingredient)))
-            {
-                SequenceAction<KebabisteIntent> sequencePrepareIngredient = new SequenceAction<KebabisteIntent>(() => 
-                    new KebabisteIntent {
-                        action = Action.PrepareIngredient,
-                        ingredient = ing
-                    }
-                );
-                SequenceCondition<KebabisteIntent> sequenceMissingPrepareIngredients =
-                    new SequenceCondition<KebabisteIntent>(() => CheckMissingPrepareIngredient(ing), sequencePrepareIngredient);
-
-                selector.AddNode(sequenceMissingPrepareIngredients);
-            }
+            CreateSequencePrepareIngredient();
             
             // Si un plat est attendu et peut être préparé
-            SequenceAction<KebabisteIntent> sequencePrepareRecipe = new SequenceAction<KebabisteIntent>(() => 
-                new KebabisteIntent {
+            SequenceAction sequencePrepareRecipe = new SequenceAction(() => 
+                SetIntent(new KebabisteIntent {
                     action = Action.CreateDish
-                }
+                })
             );
-            SequenceCondition<KebabisteIntent> sequenceRecipeCanBeMade =
-                new SequenceCondition<KebabisteIntent>(CheckRecipeCanBeMade, sequencePrepareRecipe);
+            SequenceCondition sequenceRecipeCanBeMade =
+                new SequenceCondition(CheckRecipeCanBeMade, sequencePrepareRecipe);
 
             selector.AddNode(sequenceRecipeCanBeMade);
 
-            // Si un plat est prêt à être servi
-            // TODO : Servir un plat une fois prêt
-            
             // action par defaut;
-            SequenceAction<KebabisteIntent> defaultAction = new SequenceAction<KebabisteIntent>(() => null);
-            NodeAlwaysTrue<KebabisteIntent> defaultSequence = new NodeAlwaysTrue<KebabisteIntent>(defaultAction);
+            NodeAlwaysTrue defaultSequence = new NodeAlwaysTrue();
             
             selector.AddNode(defaultSequence);
         }
 
+        private void CreateSequenceForRecipe()
+        {
+            foreach (Ingredient ing in Enum.GetValues(typeof(Ingredient)))
+            {
+                SequenceAction sequenceOrderIngredient = new SequenceAction(() => 
+                    SetIntent(new KebabisteIntent {
+                        action = Action.OrderIngredient,
+                        ingredient = ing
+                    })
+                );
+                SequenceCondition sequenceMissingIngredients =
+                    new SequenceCondition(() => CheckMissingIngredient(ing), sequenceOrderIngredient);
+
+                selector.AddNode(sequenceMissingIngredients);
+            }
+        }
+
+        private void CreateSequencePrepareIngredient()
+        {
+            foreach (Ingredient ing in Enum.GetValues(typeof(Ingredient)))
+            {
+                SequenceAction sequencePrepareIngredient = new SequenceAction(() => 
+                    SetIntent(new KebabisteIntent {
+                        action = Action.PrepareIngredient,
+                        ingredient = ing
+                    })
+                );
+                SequenceCondition sequenceMissingPrepareIngredients =
+                    new SequenceCondition(() => CheckMissingPrepareIngredient(ing), sequencePrepareIngredient);
+
+                selector.AddNode(sequenceMissingPrepareIngredients);
+            }
+        }
+
         private bool CheckRecipeCanBeMade()
         {
+            if (unableToAct || recipe == null)
+            {
+                return false;
+            }
+
             foreach (Ingredient ingredient in recipe)
             {
                 if (ingredientsReadyToUse[ingredient] == 0)
@@ -107,19 +117,23 @@ namespace BehaviorTree
         
         private bool CheckOpponentStressCondition()
         {
-            return (opponent.stress >= MAX_STRESS - 10 || opponent.servedCount > servedCount + 2) && money > 100;
+            return (opponent.stress >= MAX_STRESS - 10 || opponent.servedCount > servedCount + 2) && money > 500 && !unableToAct;
         }
 
         private bool CheckStressCondition()
         {
-            return stress >= MAX_STRESS - 10;
+            return stress >= MAX_STRESS - 10 && !unableToAct;
         }
         
         private bool CheckMissingIngredient(Ingredient ing)
         {
-            if (ingredientAmounts[ing] <= 2 && GameController.ingredientPrices[ing] < money)
+            if (unableToAct || recipe == null || !recipe.Contains(ing))
             {
-                Debug.Log("Il manque " + ing);
+                return false;
+            }
+
+            if (ingredientAmounts[ing] + ingredientsReadyToUse[ing] < 2 && !orderedIngredients.Contains(ing) && GameController.ingredientPrices[ing] < money)
+            {
                 return true;
             }
 
@@ -128,27 +142,50 @@ namespace BehaviorTree
 
         private bool CheckMissingPrepareIngredient(Ingredient ing)
         {
-            if (ingredientAmounts[ing] > 0 && ingredientsReadyToUse[ing] <= 2)
+            if (unableToAct)
             {
-                Debug.Log("Il manque " + ing);
+                return false;
+            }
+
+            if (ingredientAmounts[ing] > 0 && ingredientsReadyToUse[ing] <= 1)
+            {
                 return true;
             }
 
             return false;
         }
 
+        private void SetIntent(KebabisteIntent intent)
+        {
+            string wantTo = "Want to " + intent.action;
+
+            if (intent.action == Action.OrderIngredient || intent.action == Action.PrepareIngredient)
+            {
+                wantTo += " " + intent.ingredient;
+            }
+
+            Debug.Log(wantTo);
+            kebabisteIntent = intent;
+        }
+
         public async Task ComputeIntent()
         {
-            while (!GameController.endOfBehavior)
+            while (!GameController.endOfBehavior && GameController.gameRunning && Application.isPlaying)
             {
-                selector.GetSelectorResult();
-                await Task.Delay(100);
+                if (kebabisteIntent == null)
+                {
+                    await selector.CheckCondition();
+                }
+
+                await Task.Delay(10);
             }
         }
 
         public override KebabisteIntent GetIntent()
         {
-            return kebabisteIntent;
+            KebabisteIntent toReturn = kebabisteIntent;
+            kebabisteIntent = null;
+            return toReturn;
         }
     }
 }

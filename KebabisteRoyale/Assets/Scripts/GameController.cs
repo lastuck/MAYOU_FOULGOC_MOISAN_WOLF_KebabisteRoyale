@@ -81,7 +81,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform[] customerPlaces;
     [SerializeField] private PlayerInputs playerInputs;
     
-    private bool gameRunning = true;
+    public static bool gameRunning = true;
     
     private async void Start()
     {
@@ -295,8 +295,8 @@ public class GameController : MonoBehaviour
                 StartCoroutine(Stun(kebabiste2));
             }
 
-            PlayActions(kebabiste1, true);
-            PlayActions(kebabiste2, false);
+            PlayActions(kebabiste1, kebabiste1.GetIntent());
+            PlayActions(kebabiste2, kebabiste2.GetIntent());
             
             if (kebabiste1.servedCount > 10)
             {
@@ -332,11 +332,10 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void PlayActions(Kebabiste kebabiste, bool visual)
+    public void PlayActions(Kebabiste kebabiste, KebabisteIntent kebabisteIntent)
     {
         if (!kebabiste.unableToAct)
         {
-            KebabisteIntent kebabisteIntent = kebabiste.GetIntent();
             if (kebabisteIntent != null)
             {
                 switch (kebabisteIntent.action)

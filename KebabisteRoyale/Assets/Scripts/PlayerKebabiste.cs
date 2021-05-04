@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class PlayerKebabiste : Kebabiste
+﻿public class PlayerKebabiste : Kebabiste
 { 
     public PlayerInputs playerInputs;
     public bool isAI;

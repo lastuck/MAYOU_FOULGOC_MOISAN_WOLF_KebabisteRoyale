@@ -1,62 +1,43 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
-public enum NodeType {
-    Condition,
-    Action,
-    Selector
-}
-
-public class Node<T>
+namespace BehaviorTree
 {
-    protected Func<bool> lambada;
-    public Node<T> nextNode;
+    public enum NodeType {
+        Condition,
+        Action,
+        Selector
+    }
 
-    protected Func<T> actionToExecute;
-
-    public NodeType nodeType;
-
-    public Node()
+    public class Node
     {
-        lambada = () =>
+        public Node prevNode;
+        public Node nextNode;
+
+        public NodeType nodeType;
+
+        public Node()
+        {
+        }
+    
+        public Node(Node nextNode)
+        {
+            this.nextNode = nextNode;
+            this.nextNode.prevNode = this;
+        }
+    
+        public async virtual Task<bool> CheckCondition()
         {
             return false;
-        };
-    }
-    
-    public Node(Node<T> nextNode)
-    {
-        this.nextNode = nextNode;
-    }
+        }
 
-    public Node(Func<T> nActionToExecute)
-    {
-        actionToExecute = nActionToExecute;
-    }
+        protected async Task<bool> ComputeNextNode()
+        {
+            if (nextNode != null)
+            {
+                return await nextNode.CheckCondition();
+            }
 
-    public Node(Func<bool> nLambada)
-    {
-        lambada = nLambada;
-    }
-
-    public Node(Func<bool> nLambada, Node<T> nextNode)
-    {
-        lambada = nLambada;
-        this.nextNode = nextNode;
-    }
-    
-    public Node(Func<T> nActionToExecute, Node<T> nextNode)
-    {
-        actionToExecute = nActionToExecute;
-        this.nextNode = nextNode;
-    }
-
-    public virtual bool CheckCondition()
-    {
-        return lambada();
-    }
-    
-    public T PlayAction()
-    {
-        return actionToExecute();
+            return true;
+        }
     }
 }

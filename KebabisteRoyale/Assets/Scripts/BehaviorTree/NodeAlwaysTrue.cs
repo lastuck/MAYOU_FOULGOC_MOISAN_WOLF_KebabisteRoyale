@@ -1,21 +1,22 @@
+using System.Threading.Tasks;
+using UnityEngine;
+
 namespace BehaviorTree
 {
-    public class NodeAlwaysTrue<T> : Node<T>
+    public class NodeAlwaysTrue : Node
     {
         public NodeAlwaysTrue()
         {
-            lambada = () =>
-            {
-                return true;
-            };
+            nodeType = NodeType.Condition;
         }
-        
-        public NodeAlwaysTrue(Node<T> nextNode) : base(nextNode)
+
+        public override async Task<bool> CheckCondition()
         {
-            lambada = () =>
-            {
-                return true;
-            };
+            return await ComputeNextNode();
+        }
+
+        public NodeAlwaysTrue(Node nextNode) : base(nextNode)
+        {
         }
     }
 }

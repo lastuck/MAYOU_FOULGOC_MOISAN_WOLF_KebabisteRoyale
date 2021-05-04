@@ -1,57 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class Selector<T> : Node<T>
+namespace BehaviorTree
 {
-    public List<Node<T>> sequences;
-
-    public Selector()
+    public class Selector : Node
     {
-        sequences = new List<Node<T>>();
-        nodeType = NodeType.Selector;
-    }
+        public List<Node> sequences;
 
-    public void AddNode(Node<T> node)
-    {
-        sequences.Add(node);
-    }
-
-    public bool GetSelectorResult()
-    {
-        foreach (Node<T> node in sequences)
+        public Selector()
         {
-            if (node.nodeType != NodeType.Condition)
-            {
-                Debug.LogError("Un noeud action ne peut pas être dans un selector");
-                return false;
-            }
-
-            if (node.CheckCondition())
-            {
-                return true;
-            }
+            sequences = new List<Node>();
+            nodeType = NodeType.Selector;
         }
 
-        return false;
-    }
-
-    public override bool CheckCondition()
-    {
-        foreach (Node<T> node in sequences)
+        public void AddNode(Node node)
         {
-            if (node.nodeType != NodeType.Condition)
-            {
-                Debug.LogError("Un noeud action ne peut pas être dans un selector");
-                return false;
-            }
-
-            if (node.CheckCondition())
-            {
-                return true;
-            }
+            node.prevNode = this;
+            sequences.Add(node);
         }
 
-        return false;
+        public override async Task<bool> CheckCondition()
+        {
+            foreach (Node node in sequences)
+            {
+                if (node.nodeType == NodeType.Action)
+                {
+                    Debug.LogError("Un noeud action ne peut pas être dans un selector");
+                    return false;
+                }
+
+                if (await node.CheckCondition())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

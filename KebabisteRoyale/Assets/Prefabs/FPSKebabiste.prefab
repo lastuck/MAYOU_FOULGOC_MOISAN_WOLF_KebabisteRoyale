@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 3117142014542786820}
   - component: {fileID: 427278616123951114}
   - component: {fileID: 3329124141299290506}
+  - component: {fileID: 1017566889375430857}
   m_Layer: 0
   m_Name: FPSKebabiste
   m_TagString: Player
@@ -190,7 +191,7 @@ MonoBehaviour:
   camera: {fileID: 2341729444857316413}
   rigidbody: {fileID: 3329124141299290506}
   lifeSlider: {fileID: 724611741069034836}
-  id: 0
+  agent: {fileID: 1017566889375430857}
 --- !u!54 &3329124141299290506
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -207,6 +208,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!195 &1017566889375430857
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855016847639124566}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1554462610084219764
 GameObject:
   m_ObjectHideFlags: 0

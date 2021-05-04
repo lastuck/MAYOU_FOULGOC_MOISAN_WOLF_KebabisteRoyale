@@ -21,6 +21,8 @@ public class FPSGameController : MonoBehaviour
 
     [SerializeField] private GameObject kebabistePrefab;
     [SerializeField] private ObjectPooler objectPooler;
+    [SerializeField] private Transform[] covers;
+    [SerializeField] private Transform[] reloadingZones;
 
     private bool gameRunning = true;
     void Start()
@@ -35,13 +37,14 @@ public class FPSGameController : MonoBehaviour
         kebabiste2.kebabistePrefab = Instantiate(kebabistePrefab, keb2Spawn.position+Vector3.up, Quaternion.identity);
         
         kebabiste1.SetupPlayer();
-        kebabiste1.exposer.id = 0;
+        kebabiste1.exposer.kebabiste = kebabiste1;
         kebabiste2.SetupPlayer();
-        kebabiste2.exposer.id = 1;
+        kebabiste2.exposer.kebabiste = kebabiste2;
         
         if (kebabiste1 is FPSPlayerKebabiste player1)
         {
             player1.playerInputs = playerInputs;
+            //player1.exposer.agent.enabled = false;
             if (keb1isAI)
             {
                 player1.kebabistePrefab.GetComponent<FPSKebabisteExposer>().camera.enabled = false;
@@ -50,6 +53,7 @@ public class FPSGameController : MonoBehaviour
         if (kebabiste2 is FPSPlayerKebabiste player2)
         {
             player2.playerInputs = playerInputs;
+            //player2.exposer.agent.enabled = false;
             if (keb2isAI)
             {
                 player2.kebabistePrefab.GetComponent<FPSKebabisteExposer>().camera.enabled = false;
@@ -74,6 +78,19 @@ public class FPSGameController : MonoBehaviour
             {
                 Debug.Log("kebabiste1 a gagné");
                 gameRunning = false;
+            }
+
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                StartCoroutine(GoNear(kebabiste2));
+            }
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                StartCoroutine(Hide(kebabiste2));
+            }
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                StartCoroutine(Reload(kebabiste2));
             }
         }
     }
@@ -124,8 +141,13 @@ public class FPSGameController : MonoBehaviour
                 Shoot(kebabiste);
                 break;
             case FPSKebabiste.Action.Hide:
+                kebabiste.hiding = StartCoroutine(Hide(kebabiste));
                 break;
             case FPSKebabiste.Action.Reload:
+                kebabiste.goingToreload = StartCoroutine(Reload(kebabiste));
+                break;
+            case FPSKebabiste.Action.GoNear:
+                kebabiste.goingNear = StartCoroutine(GoNear(kebabiste));
                 break;
             case FPSKebabiste.Action.None:
             default:
@@ -171,5 +193,124 @@ public class FPSGameController : MonoBehaviour
                 kebabiste.kebabisteCam.transform.forward + kebabiste.kebabisteCam.transform.position;
             proj.GetComponent<Rigidbody>().AddForce(kebabiste.kebabisteCam.transform.forward*30,ForceMode.Impulse);
         }
+    }
+
+    private IEnumerator Hide(FPSKebabiste kebabiste)
+    {
+        if (kebabiste.isGoingNearOpponent)
+        {
+            if (kebabiste.goingNear != null)
+            {
+                StopCoroutine(kebabiste.goingNear);
+            }
+            kebabiste.isGoingNearOpponent = false;
+        }
+        if (kebabiste.isGoingToReload)
+        {
+            if (kebabiste.goingToreload != null)
+            {
+                StopCoroutine(kebabiste.goingToreload);
+            }
+            kebabiste.isGoingToReload = false;
+        }
+        if (!kebabiste.isGoingTohide)
+        {
+            Debug.Log("going");
+            kebabiste.isGoingTohide = true;
+            Vector3 cover = FindClosestIn(covers, kebabiste.kebabistePrefab.transform.position).position;
+            kebabiste.exposer.agent.SetDestination(cover);
+            while (Vector3.Distance(kebabiste.kebabistePrefab.transform.position,cover) > 0.5f)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            Debug.Log("done");
+            kebabiste.isGoingTohide = false;
+        }
+    }
+    
+    private IEnumerator GoNear(FPSKebabiste kebabiste)
+    {
+        if (kebabiste.isGoingTohide)
+        {
+            if (kebabiste.hiding != null)
+            {
+                StopCoroutine(kebabiste.hiding);
+            }
+            kebabiste.isGoingTohide = false;
+        }
+        if (kebabiste.isGoingToReload)
+        {
+            if (kebabiste.goingToreload != null)
+            {
+                StopCoroutine(kebabiste.goingToreload);
+            }
+            kebabiste.isGoingToReload = false;
+        }
+        if (!kebabiste.isGoingNearOpponent)
+        {
+            Debug.Log("going");
+            kebabiste.isGoingNearOpponent = true;
+            kebabiste.exposer.agent.SetDestination(kebabiste.opponent.kebabistePrefab.transform.position);
+            while (Vector3.Distance(kebabiste.kebabistePrefab.transform.position,kebabiste.opponent.kebabistePrefab.transform.position) > 15.0f)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            Debug.Log("done");
+            kebabiste.exposer.agent.SetDestination(kebabiste.kebabistePrefab.transform.position);
+            kebabiste.isGoingNearOpponent = false;
+        }
+    }
+    
+    private IEnumerator Reload(FPSKebabiste kebabiste)
+    {
+        if (kebabiste.isGoingTohide)
+        {
+            if (kebabiste.hiding != null)
+            {
+                StopCoroutine(kebabiste.hiding);
+            }
+
+            kebabiste.isGoingTohide = false;
+        }
+        if (kebabiste.isGoingNearOpponent)
+        {
+            if (kebabiste.goingNear != null)
+            {
+                StopCoroutine(kebabiste.goingNear);
+            }
+
+            kebabiste.isGoingNearOpponent = false;
+        }
+        if (!kebabiste.isGoingToReload)
+        {
+            Debug.Log("going");
+            kebabiste.isGoingToReload = true;
+            Vector3 reloadZone = FindClosestIn(reloadingZones, kebabiste.kebabistePrefab.transform.position).position;
+            kebabiste.exposer.agent.SetDestination(reloadZone);
+            while (Vector3.Distance(kebabiste.kebabistePrefab.transform.position,reloadZone) > 0.5f)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            Debug.Log("done");
+            kebabiste.isGoingToReload = false;
+        }
+    }
+
+    private Transform FindClosestIn(Transform[] transformList, Vector3 position)
+    {
+        Transform closestTransform = null;
+        float minDist = 100000;
+        foreach (Transform transform in transformList)
+        {
+            float dist = Vector3.Distance(position, transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closestTransform = transform;
+            }
+        }
+
+        return closestTransform;
     }
 }

@@ -17,7 +17,8 @@ public class FPSKebabiste
         StopDown,
         Shoot,
         Hide,
-        Reload
+        Reload,
+        GoNear
     }
 
     public int life;
@@ -32,6 +33,13 @@ public class FPSKebabiste
     public bool wantToGoDown;
     public bool wantToGoLeft;
     public bool wantToGoRight;
+
+    public bool isGoingTohide;
+    public bool isGoingToReload;
+    public bool isGoingNearOpponent;
+    public Coroutine hiding;
+    public Coroutine goingToreload;
+    public Coroutine goingNear;
 
 
     public FPSKebabiste()

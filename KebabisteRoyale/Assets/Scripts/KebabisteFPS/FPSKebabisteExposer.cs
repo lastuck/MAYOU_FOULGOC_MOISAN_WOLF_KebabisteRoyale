@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 using Slider = UnityEngine.UI.Slider;
 
@@ -14,5 +15,7 @@ public class FPSKebabisteExposer : MonoBehaviour
     [SerializeField]
     public Slider lifeSlider;
 
-    public int id;
+    public FPSKebabiste kebabiste;
+    [SerializeField] 
+    public NavMeshAgent agent;
 }

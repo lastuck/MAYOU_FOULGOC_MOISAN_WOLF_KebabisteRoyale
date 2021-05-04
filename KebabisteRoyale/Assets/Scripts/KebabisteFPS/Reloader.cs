@@ -12,7 +12,7 @@ public class Reloader : MonoBehaviour
     {
         if (other.tag == "Player" && !isReloading)
         {
-            Reloading = StartCoroutine(ReloadAmmo(other.GetComponent<FPSKebabisteExposer>().id));
+            Reloading = StartCoroutine(ReloadAmmo(other.GetComponent<FPSKebabisteExposer>().kebabiste));
         } 
     }
 
@@ -25,7 +25,7 @@ public class Reloader : MonoBehaviour
         }
     }
 
-    private IEnumerator ReloadAmmo(int id)
+    private IEnumerator ReloadAmmo(FPSKebabiste kebabiste)
     {
         Debug.Log("start reloading");
         isReloading = true;
@@ -35,13 +35,8 @@ public class Reloader : MonoBehaviour
             yield return new WaitForSeconds(1.0f);
             cpt++;
         }
-        if (id == 0)
-        {
-            FPSGameController.kebabiste1.ammo = 10;
-        } else
-        {
-            FPSGameController.kebabiste2.ammo = 10;
-        }
+        
+        kebabiste.ammo = 10;
         isReloading = false;
         Debug.Log("reloading done");
     }
